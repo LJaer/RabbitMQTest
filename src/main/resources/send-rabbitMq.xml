@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/rabbit
+	   http://www.springframework.org/schema/rabbit/spring-rabbit-1.4.xsd
+	   http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context.xsd"
+	default-lazy-init="true">
+
+	<!-- 扫描 rabbitmq包 -->
+	<context:component-scan base-package="com.credithc.finance" />
+
+	<context:property-placeholder
+		ignore-unresolvable="true" location="classpath:rabbit.properties" />
+
+	<!--配置connection-factory，指定连接rabbit server参数 -->
+	<rabbit:connection-factory id="connectionFactory"
+		host="${mq.host}" username="${mq.username}" password="${mq.password}"
+		port="${mq.port}" virtual-host="${mq.vhost}" />
+
+	<!--定义rabbit template用于数据的接收和发送 -->
+	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+		exchange="exchange.topic.producer" message-converter="jsonMessageConverter" />
+
+	<!-- 消息对象json转换类 -->
+	<bean id="jsonMessageConverter"
+		class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />
+
+	<!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+	<rabbit:admin id="rabbitAdmin" connection-factory="connectionFactory"
+		auto-startup="true" ignore-declaration-exceptions="false" />
+
+	<rabbit:queue id="queue.zk.test" name="queue.zk.test"
+		auto-declare="true" auto-delete="false" exclusive="false" durable="true"
+		declared-by="rabbitAdmin" />
+	<rabbit:topic-exchange id="test"
+		auto-declare="true" name="test" auto-delete="false"
+		durable="true" declared-by="rabbitAdmin">
+		<rabbit:bindings>
+			<rabbit:binding pattern="queue.zk.test" queue="queue.zk.test" />
+		</rabbit:bindings>
+	</rabbit:topic-exchange>
+</beans>
