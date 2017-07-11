@@ -1,9 +1,11 @@
-package com.credithc.finance.jfinal.mq;
+package com.test.mq;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class RabbitmqProducerTest {
@@ -13,7 +15,11 @@ public class RabbitmqProducerTest {
 	public static void main(String[] args) {
 		context = new ClassPathXmlApplicationContext("send-rabbitMq.xml");
 		AmqpTemplate amqpTemplate = context.getBean(AmqpTemplate.class);
-		amqpTemplate.convertAndSend("queue.zk.test", "Hello World Spring amqp");
+		JSONObject json = new JSONObject();
+		json.put("name", "张三");
+		json.put("age", "15");
+		amqpTemplate.convertAndSend("queue.ljaer.test", json);
+		//amqpTemplate.convertAndSend("exchange.topic.producer","queue.zk.test", json);
 		System.out.println("success");
 	}
 }

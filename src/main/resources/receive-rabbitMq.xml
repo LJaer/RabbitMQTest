@@ -9,21 +9,22 @@
 	   http://www.springframework.org/schema/context
 	   http://www.springframework.org/schema/context/spring-context.xsd"
 	default-lazy-init="true">
-		
-    <!--引入基础配置 -->
-    <import resource="classpath*:basic-rabbitMq.xml"/>
 
+	<!--引入基础配置 -->
+	<import resource="classpath*:basic-rabbitMq.xml" />
+
+	<!--定义queue 接收数据 -->
 	<rabbit:queue id="queue.ljaer.test" name="queue.ljaer.test"
 		auto-declare="true" auto-delete="false" exclusive="false" durable="true"
 		declared-by="rabbitAdmin" />
-		
-	<!-- Exchange Type 为   topic 配置方法 -->
-	<rabbit:topic-exchange id="exchange.topic.producer"
-		auto-declare="true" name="exchange.topic.producer" auto-delete="false"
-		durable="true" declared-by="rabbitAdmin">
-		<rabbit:bindings>
-			<rabbit:binding pattern="queue.ljaer.test" queue="queue.ljaer.test" />
-		</rabbit:bindings>
-	</rabbit:topic-exchange>
-	
+
+	<!-- 消息监听器 -->
+	<bean id="rabbitmqConsumerTest" class="com.test.mq.RabbitmqConsumerTest" />
+
+	<!-- 队列监听 -->
+	<rabbit:listener-container
+		connection-factory="connectionFactory" acknowledge="auto">
+		<rabbit:listener queues="queue.ljaer.test" ref="rabbitmqConsumerTest" />
+	</rabbit:listener-container>
+
 </beans>
