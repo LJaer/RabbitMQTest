@@ -5,9 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
-/**
- *
- */
+@Service
 public class RabbitmqProducerTest {
 
 	private static ApplicationContext context;
@@ -15,7 +13,7 @@ public class RabbitmqProducerTest {
 	public static void main(String[] args) {
 		context = new ClassPathXmlApplicationContext("send-rabbitMq.xml");
 		AmqpTemplate amqpTemplate = context.getBean(AmqpTemplate.class);
-		amqpTemplate.convertAndSend("exchange.topic.producer","queue.zk.test", "Hello World Spring amqp");
+		amqpTemplate.convertAndSend("queue.zk.test", "Hello World Spring amqp");
 		System.out.println("success");
 	}
 }

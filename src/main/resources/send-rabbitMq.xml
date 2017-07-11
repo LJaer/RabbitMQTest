@@ -36,11 +36,14 @@
 	<rabbit:queue id="queue.zk.test" name="queue.zk.test"
 		auto-declare="true" auto-delete="false" exclusive="false" durable="true"
 		declared-by="rabbitAdmin" />
-	<rabbit:topic-exchange id="test"
-		auto-declare="true" name="test" auto-delete="false"
+		
+	<!-- Exchange Type 为   topic 配置方法 -->
+	<rabbit:topic-exchange id="exchange.topic.producer"
+		auto-declare="true" name="exchange.topic.producer" auto-delete="false"
 		durable="true" declared-by="rabbitAdmin">
 		<rabbit:bindings>
 			<rabbit:binding pattern="queue.zk.test" queue="queue.zk.test" />
 		</rabbit:bindings>
 	</rabbit:topic-exchange>
+	
 </beans>
