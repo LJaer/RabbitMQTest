@@ -19,7 +19,7 @@ public class RabbitmqProducerTest {
 		json.put("name", "张三");
 		json.put("age", "15");
 		amqpTemplate.convertAndSend("queue.ljaer.test", json);
-		//amqpTemplate.convertAndSend("exchange.topic.producer","queue.zk.test", json);
+		//amqpTemplate.convertAndSend("exchange.topic.producer","queue.ljaer.test", json);
 		System.out.println("success");
 	}
 }
